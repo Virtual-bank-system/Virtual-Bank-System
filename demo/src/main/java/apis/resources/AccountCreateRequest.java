@@ -1,5 +1,7 @@
-package application.models;
+package apis.resources;
 
+import application.enums.AccountType;
+import application.enums.Status;
 import jakarta.validation.constraints.*;
 
 import java.time.LocalDateTime;
@@ -8,13 +10,13 @@ public class AccountCreateRequest {
 
     @NotBlank(message = "User ID is required")
     @NotNull(message = "User ID is required")
-    @Positive(message = "User ID must be positive")
     private String user_id;
 
     @NotBlank(message = "Account number is required")
     @NotNull(message = "Account number is required")
+
+    // change size
     @Size(min=5, max = 20, message = "Account number must be between 5 and 20 characters")
-    @Positive(message = "Account number must be positive")
     private String account_number;
 
     @NotBlank(message = "Account type is required")

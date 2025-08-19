@@ -1,4 +1,7 @@
-package application.models;
+package apis.resources;
+
+import application.enums.AccountType;
+import application.enums.Status;
 
 import java.time.LocalDateTime;
 
