@@ -1,11 +1,9 @@
 package com.Ejada.TransactionService.apis.resources.outResources;
 
 import com.Ejada.TransactionService.application.enums.Status;
-import lombok.Data;
 
 import java.time.LocalDateTime;
 
-@Data
 public class TransactionHistoryResponse {
 
     private String id;
