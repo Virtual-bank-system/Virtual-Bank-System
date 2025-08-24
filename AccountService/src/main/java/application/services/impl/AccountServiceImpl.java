@@ -1,4 +1,4 @@
-package application.services;
+package application.services.impl;
 
 import apis.resources.*;
 import application.enums.AccountType;
@@ -7,9 +7,9 @@ import application.exceptions.AccountNotFoundException;
 import application.exceptions.InsufficientFundsException;
 import application.models.Account;
 import application.repos.AccountRepo;
+import application.services.AccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
