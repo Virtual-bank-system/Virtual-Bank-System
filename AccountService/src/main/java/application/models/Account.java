@@ -15,7 +15,7 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private String user_id;
 
     @Column(length = 20, unique = true, nullable = false)
