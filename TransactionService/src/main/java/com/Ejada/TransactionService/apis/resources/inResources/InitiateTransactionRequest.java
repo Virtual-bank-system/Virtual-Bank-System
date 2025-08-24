@@ -1,13 +1,12 @@
-package com.Ejada.TransactionService.apis.resources;
+package com.Ejada.TransactionService.apis.resources.inResources;
 
-import com.Ejada.TransactionService.application.enums.Status;
-import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
+import lombok.Data;
 
-import jakarta.validation.constraints.*;
-import java.time.LocalDateTime;
-
-public class TransactionCreateRequest {
-
+@Data
+public class InitiateTransactionRequest {
     @NotBlank(message = "From Account ID is required")
     @NotNull(message = "From Account ID is required")
     private String from_account_id;
@@ -22,5 +21,4 @@ public class TransactionCreateRequest {
     private double amount;
 
     private String description;
-
 }
