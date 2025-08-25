@@ -42,10 +42,10 @@ public class TransactionServiceImpl implements TransactionService {
         // 2- check if to account id exists
         // 3- check amount is valid : non-negative , greater than balance in from account id
         // 4- if valid, save it
-        ResponseEntity<AccountDetail> from = accountClient.getAccountById(fromAccountId);
-        ResponseEntity<AccountDetail> to = accountClient.getAccountById(toAccountId);
+        AccountDetail from = accountClient.getAccountById(fromAccountId);
+        AccountDetail to = accountClient.getAccountById(toAccountId);
 
-        double currentBalance = from.getBody().getBalance();
+        double currentBalance = from.getBalance();
 
         if(amount > currentBalance){
              throw new InsufficientFunds();
@@ -112,7 +112,7 @@ public class TransactionServiceImpl implements TransactionService {
 
     public TransactionDetailList getTransactionsList(String accountId){
         // check on account id
-        ResponseEntity<AccountDetail> accountDetail = accountClient.getAccountById(accountId);
+        AccountDetail accountDetail = accountClient.getAccountById(accountId);
 
         List<Transaction> fromTransactions = transactionRepo.findByFromAccountId(accountId);
         List<Transaction> toTransactions = transactionRepo.findByToAccountId(accountId);

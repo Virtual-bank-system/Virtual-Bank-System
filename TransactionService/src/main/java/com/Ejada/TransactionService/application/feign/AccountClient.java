@@ -10,12 +10,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 // Will change it
-@FeignClient("AccountService")
+@FeignClient(value = "AccountService", url = "http://localhost:8081")
 public interface AccountClient {
 
     @GetMapping("/accounts/{accountId}")
-    ResponseEntity<AccountDetail> getAccountById(@Valid @PathVariable String accountId);
+    AccountDetail getAccountById(@Valid @PathVariable String accountId);
 
     @PutMapping("/accounts/transfer")
-    ResponseEntity<AccountTransferResponse> transfer(@Valid @RequestBody AccountTransferRequest request);
+    AccountTransferResponse transfer(@Valid @RequestBody AccountTransferRequest request);
 }
