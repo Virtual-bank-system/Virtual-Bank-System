@@ -1,6 +1,6 @@
-package application.services;
+package com.example.demo.application.services;
 
-import apis.resources.*;
+import com.example.demo.apis.resources.*;
 
 import java.util.List;
 

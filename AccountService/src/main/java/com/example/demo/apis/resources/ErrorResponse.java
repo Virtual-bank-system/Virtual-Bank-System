@@ -1,4 +1,4 @@
-package apis.resources;
+package com.example.demo.apis.resources;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

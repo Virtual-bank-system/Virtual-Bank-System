@@ -1,8 +1,8 @@
-package application.exceptions;
+package com.example.demo.application.exceptions;
 
 public class AccountNotFoundException extends ApplicationException {
     public AccountNotFoundException() {
-        super("Account not found", "ACCOUNT_NOT_FOUND", 404);
+        super("Invalid 'from' or 'to' account ID.", "BAD_REQUEST", 400);
     }
     public AccountNotFoundException(String message, String errorCode, int httpStatus) {
         super(message, errorCode, httpStatus);

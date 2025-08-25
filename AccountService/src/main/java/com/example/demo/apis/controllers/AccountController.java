@@ -1,7 +1,7 @@
-package apis.controllers;
+package com.example.demo.apis.controllers;
 
-import apis.resources.*;
-import application.services.AccountService;
+import com.example.demo.application.services.AccountService;
+import com.example.demo.apis.resources.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

@@ -1,13 +1,13 @@
-package application.services.impl;
+package com.example.demo.application.services.impl;
 
-import apis.resources.*;
-import application.enums.AccountType;
-import application.enums.Status;
-import application.exceptions.AccountNotFoundException;
-import application.exceptions.InsufficientFundsException;
-import application.models.Account;
-import application.repos.AccountRepo;
-import application.services.AccountService;
+import com.example.demo.application.enums.AccountType;
+import com.example.demo.application.enums.Status;
+import com.example.demo.application.exceptions.AccountNotFoundException;
+import com.example.demo.application.exceptions.InsufficientFundsException;
+import com.example.demo.application.models.Account;
+import com.example.demo.application.repos.AccountRepo;
+import com.example.demo.application.services.AccountService;
+import com.example.demo.apis.resources.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
@@ -25,7 +25,7 @@ public class AccountServiceImpl implements AccountService {
         Account account = new Account();
         account.setId(UUID.randomUUID().toString());
         account.setUser_id(request.getUserId());
-        account.setAccount_number(generateAccountNumber());
+        account.setAccountNumber(UUID.randomUUID().toString());
         account.setAccount_type(AccountType.valueOf(request.getAccountType().toUpperCase()));
         account.setBalance(request.getInitialBalance());
         account.setStatus(Status.ACTIVE);
@@ -33,12 +33,16 @@ public class AccountServiceImpl implements AccountService {
         account.setUpdated_at(LocalDateTime.now());
 
         Account saved = accountRepository.save(account);
-        return new AccountResponse(saved.getId(), saved.getAccount_number(), "Account created successfully");
+        return new AccountResponse(saved.getId(), saved.getAccountNumber(), "Account created successfully");
     }
 
     public AccountDetail getAccountById(String accountId) {
         Account account = accountRepository.findById(accountId)
-                .orElseThrow(AccountNotFoundException::new);
+                .orElseThrow(() -> new AccountNotFoundException(
+                        "Account with ID " + accountId + " not found.",
+                        "NOT_FOUND",
+                        404
+                ));
         return mapToDetail(account);
     }
 
@@ -48,7 +52,7 @@ public class AccountServiceImpl implements AccountService {
                 .toList();
 
         if (accounts.isEmpty()) {
-            throw new AccountNotFoundException("No accounts found for user: " + userId, "ACCOUNT_NOT_FOUND", 404);
+            throw new AccountNotFoundException("No accounts found for user: " + userId, "NOT_FOUND", 404);
         }
 
         return accounts.stream().map(this::mapToDetail).collect(Collectors.toList());
@@ -79,14 +83,10 @@ public class AccountServiceImpl implements AccountService {
     private AccountDetail mapToDetail(Account account) {
         AccountDetail detail = new AccountDetail();
         detail.setAccountId(account.getId());
-        detail.setAccountNumber(account.getAccount_number());
+        detail.setAccountNumber(account.getAccountNumber());
         detail.setBalance(account.getBalance());
-        detail.setAccountType(account.getAccount_type().name().toLowerCase());
-        detail.setStatus(account.getStatus().name().toLowerCase());
+        detail.setAccountType(account.getAccount_type().name());
+        detail.setStatus(account.getStatus().name());
         return detail;
-    }
-
-    private String generateAccountNumber() {
-        return UUID.randomUUID().toString();
     }
 }

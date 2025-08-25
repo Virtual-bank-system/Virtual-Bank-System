@@ -1,4 +1,4 @@
-package apis.resources;
+package com.example.demo.apis.resources;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;

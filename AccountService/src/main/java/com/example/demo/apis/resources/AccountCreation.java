@@ -1,4 +1,4 @@
-package apis.resources;
+package com.example.demo.apis.resources;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -12,8 +12,8 @@ public class AccountCreation {
     @NotNull(message = "User ID is required")
     private String userId;
 
-    @NotBlank(message = "Account number is required")
-    @NotNull(message = "Account number is required")
+    @NotBlank(message = "Account type is required")
+    @NotNull(message = "Account type is required")
     private String accountType;
 
     @NotNull

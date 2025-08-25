@@ -1,4 +1,4 @@
-package apis.resources;
+package com.example.demo.apis.resources;
 
 import lombok.Data;
 
@@ -7,6 +7,6 @@ public class AccountDetail {
     private String accountId;
     private String accountNumber;
     private double balance;
-    private String accountType; // "debit" or "credit"
-    private String status;      // "active" or "inactive"
+    private String accountType;
+    private String status;
 }
