@@ -1,13 +1,13 @@
 package com.Ejada.TransactionService.application.services.impl;
 
-import com.Ejada.TransactionService.apis.resources.outResources.TransactionExecutionResponse;
-import com.Ejada.TransactionService.apis.resources.outResources.TransactionHistoryListResponse;
-import com.Ejada.TransactionService.apis.resources.outResources.TransactionHistoryResponse;
-import com.Ejada.TransactionService.apis.resources.outResources.TransactionInitiationResponse;
+import com.Ejada.TransactionService.apis.resources.outResources.TransactionDetail;
+import com.Ejada.TransactionService.apis.resources.outResources.TransactionDetailList;
+import com.Ejada.TransactionService.apis.resources.outResources.TransferResponse;
+import com.Ejada.TransactionService.application.enums.DeliveryStatus;
 import com.Ejada.TransactionService.application.enums.Status;
-import com.Ejada.TransactionService.application.exceptions.GlobalExceptionHandler;
 import com.Ejada.TransactionService.application.exceptions.InsufficientFunds;
-import com.Ejada.TransactionService.application.exceptions.TransactionNotFoundException;
+import com.Ejada.TransactionService.application.exceptions.FailedTransaction;
+import com.Ejada.TransactionService.application.exceptions.NoTransactionList;
 import com.Ejada.TransactionService.application.feign.AccountClient;
 import com.Ejada.TransactionService.application.feign.dto.AccountDetail;
 import com.Ejada.TransactionService.application.feign.dto.AccountTransferRequest;
@@ -19,10 +19,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TransactionServiceImpl implements TransactionService {
@@ -36,107 +37,120 @@ public class TransactionServiceImpl implements TransactionService {
     @Autowired
     private AccountClient accountClient;
 
-    public TransactionInitiationResponse initiateTransaction(String fromAccountId, String toAccountId, double amount, String description){
+    public TransferResponse initiateTransaction(String fromAccountId, String toAccountId, double amount, String description){
         // 1- check if from account id exists
         // 2- check if to account id exists
         // 3- check amount is valid : non-negative , greater than balance in from account id
-        //4- if valid, save it
+        // 4- if valid, save it
         ResponseEntity<AccountDetail> from = accountClient.getAccountById(fromAccountId);
         ResponseEntity<AccountDetail> to = accountClient.getAccountById(toAccountId);
 
-//        if (amount <= 0) {
-//            throw new GlobalExceptionHandler("Amount must be greater than 0");
-//        }
-//
-        double currentAmount = from.getBody().getBalance();
+        double currentBalance = from.getBody().getBalance();
 
-        if(amount < currentAmount){
+        if(amount > currentBalance){
              throw new InsufficientFunds();
         }
+
         Transaction transaction = new Transaction();
 
-        transaction.setFrom_account_id(fromAccountId);
-        transaction.setTo_account_id(toAccountId);
-
-        // amount or negative amount ??
+        transaction.setFromAccountId(fromAccountId);
+        transaction.setToAccountId(toAccountId);
         transaction.setAmount(amount);
         transaction.setDescription(description);
-        // status default already initiated
+        transaction.setStatus(Status.INITIATED);
+        transaction.setTimestamp(LocalDateTime.now());
 
         transactionRepo.save(transaction);
 
-        TransactionInitiationResponse response = mapper.toTransactionInitiationResponse(transaction);
+        TransferResponse response = mapper.toTransferResponse(transaction);
 
         return response;
     }
 
-    public TransactionExecutionResponse executeTransaction(String transactionId) {
-      // Check id
+    public TransferResponse executeTransaction(String transactionId) {
+        // Check ID
         Transaction transaction = transactionRepo.findById(transactionId)
-                .orElseThrow(() -> new TransactionNotFoundException());
-
-//        if (!transaction.getStatus().equals(Status.INITIATED)) {
-//            throw new InvalidTransactionStateException("Transaction not in INITIATED state");
-//        }
+                ///  ????
+                .orElseThrow(() -> new FailedTransaction());
 
         try {
-            // Debit from account
+            //  Debit from account
             AccountTransferRequest debitRequest = new AccountTransferRequest(
-                    transaction.getFrom_account_id(),
-                    transaction.getTo_account_id(),
-                    -transaction.getAmount() // negative for debit
+                    transaction.getFromAccountId(),
+                    transaction.getToAccountId(),
+                    -transaction.getAmount() // negative as debit
             );
-
             accountClient.transfer(debitRequest);
 
-            // Credit to account
+            //  Credit to account
             AccountTransferRequest creditRequest = new AccountTransferRequest(
-                    transaction.getTo_account_id(),
-                    transaction.getFrom_account_id(),
+                    transaction.getToAccountId(),
+                    transaction.getFromAccountId(),
                     transaction.getAmount() // positive for credit
             );
 
             accountClient.transfer(creditRequest);
 
-            // 4. Update transaction as SUCCESS
+            // Update transaction to SUCCESS
             transaction.setStatus(Status.SUCCESS);
             transaction.setTimestamp(LocalDateTime.now());
             transactionRepo.save(transaction);
 
-            return new TransactionExecutionResponse(
+            return new TransferResponse(
                     transaction.getId(),
                     Status.SUCCESS,
                     transaction.getTimestamp()
             );
-        } catch (Exception ex) {
-            // On failure
+        }
+        catch (Exception e) {
             transaction.setStatus(Status.FAILED);
             transaction.setTimestamp(LocalDateTime.now());
             transactionRepo.save(transaction);
-
-          //  throw new BadRequestException("Invalid 'from' or 'to' account ID, or insufficient funds.");
+            throw new FailedTransaction(e.getMessage(),"Bad Request",400);
         }
-        return null;
     }
 
-
-    public TransactionHistoryListResponse getTransactionsList(String accountId){
+    public TransactionDetailList getTransactionsList(String accountId){
         // check on account id
         ResponseEntity<AccountDetail> accountDetail = accountClient.getAccountById(accountId);
 
-        List<Transaction> fromTransactions = transactionRepo.findByFrom_account_id(accountId);
-        List<Transaction> toTransactions = transactionRepo.findByTo_account_id(accountId);
+        List<Transaction> fromTransactions = transactionRepo.findByFromAccountId(accountId);
+        List<Transaction> toTransactions = transactionRepo.findByToAccountId(accountId);
 
-        List<TransactionHistoryResponse> fromResponses = mapper.toTransactionResponseList(fromTransactions);
-        List<TransactionHistoryResponse> toResponses = mapper.toTransactionResponseList(toTransactions);
+        if (fromTransactions.isEmpty() && toTransactions.isEmpty()) {
+            throw new NoTransactionList(accountId);
+        }
+
+        // 3 - Convert "from" transactions to response → mark as negative + SENT
+        List<TransactionDetail> fromResponses = fromTransactions.stream()
+                .map(transaction -> {
+                    TransactionDetail res = mapper.toTransactionResponse(transaction);
+                    res.setAmount(-transaction.getAmount());
+                    res.setDeliveryStatus(DeliveryStatus.SENT);
+                    return res;
+                })
+                .collect(Collectors.toList());
+
+        // 4 - Convert "to" transactions to response → keep positive + DELIVERED
+        List<TransactionDetail> toResponses = toTransactions.stream()
+                .map(tx -> {
+                    TransactionDetail res = mapper.toTransactionResponse(tx);
+                    res.setDeliveryStatus(DeliveryStatus.DELIVERED);
+                    return res;
+                })
+                .collect(Collectors.toList());
 
         // Combine both lists
-        List<TransactionHistoryResponse> allResponses = new ArrayList<>();
+        List<TransactionDetail> allResponses = new ArrayList<>();
         allResponses.addAll(fromResponses);
         allResponses.addAll(toResponses);
 
+        // sort by timestamp descending
+        allResponses.sort(Comparator.comparing(TransactionDetail::getTimestamp).reversed());
+
+
         // Build response
-        TransactionHistoryListResponse response = new TransactionHistoryListResponse();
+        TransactionDetailList response = new TransactionDetailList();
         response.setTransaction_response_list(allResponses);
 
         return response;

@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
-public class ExecuteTransactionRequest {
+public class TransferRequestExecution {
     @NotBlank(message = "Transaction ID is required")
     @NotNull(message = "Transaction ID is required")
     private String transaction_id;

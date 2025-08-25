@@ -14,11 +14,12 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    @Column(nullable = false)
-    private String from_account_id;
+    @Column(name = "from_account_id", nullable = false)
+    private String fromAccountId;
 
-    @Column(nullable = false)
-    private String to_account_id;
+    @Column(name = "to_account_id", nullable = false)
+    private String toAccountId;
+
 
     @Column(columnDefinition = "DECIMAL(15,2)", nullable = false)
     private double amount;
@@ -28,8 +29,8 @@ public class Transaction {
 
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "DEFAULT 'INITIATED'")
-    private Status status;
+    private Status status = Status.INITIATED;
 
     @Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP", updatable = false)
-    private LocalDateTime timestamp;
+    private LocalDateTime timestamp = LocalDateTime.now();
 }

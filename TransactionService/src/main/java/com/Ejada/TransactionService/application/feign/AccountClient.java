@@ -11,12 +11,11 @@ import org.springframework.web.bind.annotation.*;
 
 // Will change it
 @FeignClient("AccountService")
-@RequestMapping("/accounts")
 public interface AccountClient {
 
-    @GetMapping("/{accountId}")
-    ResponseEntity<AccountDetail> getAccountById(@PathVariable String accountId);
+    @GetMapping("/accounts/{accountId}")
+    ResponseEntity<AccountDetail> getAccountById(@Valid @PathVariable String accountId);
 
-    @PutMapping("/transfer")
+    @PutMapping("/accounts/transfer")
     ResponseEntity<AccountTransferResponse> transfer(@Valid @RequestBody AccountTransferRequest request);
 }
