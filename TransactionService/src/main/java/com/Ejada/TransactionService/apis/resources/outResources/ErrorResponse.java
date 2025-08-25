@@ -9,7 +9,7 @@ import java.time.ZonedDateTime;
 @Data
 @AllArgsConstructor
 public class ErrorResponse {
-    private final String message;
-    private final HttpStatus httpStatus;
-    private final ZonedDateTime timestamp;
+    private final int httpStatus;
+    private final String errorCode;
+    private final String errorMessage;
 }

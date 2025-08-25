@@ -8,5 +8,5 @@ import lombok.Data;
 public class TransferRequestExecution {
     @NotBlank(message = "Transaction ID is required")
     @NotNull(message = "Transaction ID is required")
-    private String transaction_id;
+    private String transactionId;
 }

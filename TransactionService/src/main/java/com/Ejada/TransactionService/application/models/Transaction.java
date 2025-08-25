@@ -9,6 +9,7 @@ import com.Ejada.TransactionService.application.enums.Status;
 
 @Data
 @Entity
+@Table(name = "transaction")
 public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -28,9 +29,9 @@ public class Transaction {
     private String description;
 
     @Enumerated(EnumType.STRING)
-    @Column(columnDefinition = "DEFAULT 'INITIATED'")
+    @Column(columnDefinition = "VARCHAR(20) DEFAULT 'INITIATED'")
     private Status status = Status.INITIATED;
 
-    @Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP", updatable = false)
+    @Column(nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime timestamp = LocalDateTime.now();
 }

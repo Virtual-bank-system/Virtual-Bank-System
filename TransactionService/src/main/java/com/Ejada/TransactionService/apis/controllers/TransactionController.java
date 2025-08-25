@@ -17,20 +17,20 @@ public class TransactionController {
     @Autowired
     private TransactionService transactionService;
 
-   @PutMapping("/transfer/initiation")
+   @PostMapping("/transfer/initiation")
     public ResponseEntity<TransferResponse> initiateTransaction(@Valid @RequestBody TransferRequestInitiation request) {
        TransferResponse response = transactionService.initiateTransaction(
-               request.getFrom_account_id(),
-               request.getTo_account_id(),
+               request.getFromAccountId(),
+               request.getToAccountId(),
                request.getAmount(),
                request.getDescription()
        );
        return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/transfer/execution")
+    @PostMapping("/transfer/execution")
     public ResponseEntity<TransferResponse> executeTransaction(@Valid @RequestBody TransferRequestExecution request) {
-        TransferResponse response = transactionService.executeTransaction(request.getTransaction_id());
+        TransferResponse response = transactionService.executeTransaction(request.getTransactionId());
         return ResponseEntity.ok(response);
     }
 
