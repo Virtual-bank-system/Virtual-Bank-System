@@ -4,6 +4,7 @@ import com.example.demo.application.enums.AccountType;
 import com.example.demo.application.enums.Status;
 import com.example.demo.application.exceptions.AccountNotFoundException;
 import com.example.demo.application.exceptions.InsufficientFundsException;
+import com.example.demo.application.exceptions.InvalidAccountException;
 import com.example.demo.application.models.Account;
 import com.example.demo.application.repos.AccountRepo;
 import com.example.demo.application.services.AccountService;
@@ -22,6 +23,9 @@ public class AccountServiceImpl implements AccountService {
     private AccountRepo accountRepository;
 
     public AccountResponse createAccount(AccountCreation request) {
+        if(request.getInitialBalance()<0 || Double.isNaN(request.getInitialBalance()))
+            throw new InvalidAccountException();
+
         Account account = new Account();
         account.setUser_id(request.getUserId());
         account.setAccountNumber(UUID.randomUUID().toString());

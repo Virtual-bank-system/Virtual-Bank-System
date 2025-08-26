@@ -3,9 +3,11 @@ package com.example.demo.apis.resources;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
+@AllArgsConstructor
 public class AccountCreation {
 
     @NotBlank(message = "User ID is required")
@@ -16,7 +18,6 @@ public class AccountCreation {
     @NotNull(message = "Account type is required")
     private String accountType;
 
-    @NotNull
-    @PositiveOrZero(message = "Balance cannot be negative")
+    @NotNull(message = "Initial balance is required")
     private Double initialBalance;
 }
