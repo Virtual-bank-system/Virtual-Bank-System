@@ -12,5 +12,5 @@ import java.util.List;
 public interface AccountClient {
 
     @GetMapping("accounts/users/{userId}")
-    public List<AccountDetail> getAccountsByUser(@PathVariable String userId);
+    List<AccountDetail> getAccountsByUser(@PathVariable String userId);
 }

@@ -11,5 +11,5 @@ import org.springframework.web.bind.annotation.PathVariable;
 public interface TransactionClient {
 
     @GetMapping("/accounts/{accountId}/transactions")
-    public TransactionDetailList getTransactionsList(@Valid @PathVariable String accountId);
+    TransactionDetailList getTransactionsList(@PathVariable String accountId);
 }

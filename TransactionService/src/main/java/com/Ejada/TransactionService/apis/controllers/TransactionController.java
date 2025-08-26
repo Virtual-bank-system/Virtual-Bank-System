@@ -34,7 +34,7 @@ public class TransactionController {
     }
 
     @GetMapping("accounts/{accountId}/transactions")
-    public ResponseEntity<TransactionDetailList> getTransactionsList(@Valid @PathVariable String accountId) {
+    public ResponseEntity<TransactionDetailList> getTransactionsList(@PathVariable String accountId) {
         return ResponseEntity.ok(transactionService.getTransactionsList(accountId));
     }
 

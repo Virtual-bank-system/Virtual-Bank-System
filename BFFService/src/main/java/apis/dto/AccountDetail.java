@@ -8,7 +8,7 @@ import lombok.Data;
 public class AccountDetail {
     private String accountId;
     private String accountNumber;
-    private double balance;
     private String accountType;
+    private double balance;
 }
 
