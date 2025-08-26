@@ -11,13 +11,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/transactions")
 public class TransactionController {
 
     @Autowired
     private TransactionService transactionService;
 
-   @PostMapping("/transfer/initiation")
+   @PostMapping("transactions/transfer/initiation")
     public ResponseEntity<TransferResponse> initiateTransaction(@Valid @RequestBody TransferRequestInitiation request) {
        TransferResponse response = transactionService.initiateTransaction(
                request.getFromAccountId(),
@@ -28,13 +27,13 @@ public class TransactionController {
        return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/transfer/execution")
+    @PostMapping("transactions/transfer/execution")
     public ResponseEntity<TransferResponse> executeTransaction(@Valid @RequestBody TransferRequestExecution request) {
         TransferResponse response = transactionService.executeTransaction(request.getTransactionId());
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/accounts/{accountId}/transactions")
+    @GetMapping("accounts/{accountId}/transactions")
     public ResponseEntity<TransactionDetailList> getTransactionsList(@Valid @PathVariable String accountId) {
         return ResponseEntity.ok(transactionService.getTransactionsList(accountId));
     }
