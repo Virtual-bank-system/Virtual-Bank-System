@@ -26,8 +26,9 @@ public class GlobalExceptionHandler {
     // Optional: fallback for uncaught exceptions
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleOtherExceptions(Exception ex) {
+        ex.printStackTrace();
         ErrorResponse error = new ErrorResponse(
-                "Internal Server Error",
+                ex.getMessage(),
                 "INTERNAL_ERROR",
                 500
         );
