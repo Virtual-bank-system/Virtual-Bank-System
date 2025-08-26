@@ -17,7 +17,7 @@ public class Account {
     @Column(nullable = false)
     private String user_id;
 
-    @Column(length = 20, unique = true, nullable = false)
+    @Column(unique = true, nullable = false)
     private String accountNumber;
 
     @Enumerated(EnumType.STRING)

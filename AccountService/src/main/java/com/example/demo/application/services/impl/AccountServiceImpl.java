@@ -8,7 +8,7 @@ import com.example.demo.application.models.Account;
 import com.example.demo.application.repos.AccountRepo;
 import com.example.demo.application.services.AccountService;
 import com.example.demo.apis.resources.*;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,14 +16,13 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class AccountServiceImpl implements AccountService {
 
+    @Autowired
     private AccountRepo accountRepository;
 
     public AccountResponse createAccount(AccountCreation request) {
         Account account = new Account();
-        account.setId(UUID.randomUUID().toString());
         account.setUser_id(request.getUserId());
         account.setAccountNumber(UUID.randomUUID().toString());
         account.setAccount_type(AccountType.valueOf(request.getAccountType().toUpperCase()));
@@ -77,7 +76,7 @@ public class AccountServiceImpl implements AccountService {
         accountRepository.save(from);
         accountRepository.save(to);
 
-        return new AccountTransferResponse("Transfer successful");
+        return new AccountTransferResponse("Accounts updated successfully.");
     }
 
     private AccountDetail mapToDetail(Account account) {

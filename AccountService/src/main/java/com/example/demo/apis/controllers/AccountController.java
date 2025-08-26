@@ -4,6 +4,7 @@ import com.example.demo.application.services.AccountService;
 import com.example.demo.apis.resources.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,9 +12,9 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/accounts")
-@RequiredArgsConstructor
 public class AccountController {
 
+    @Autowired
     private AccountService accountService;
 
     @PostMapping
