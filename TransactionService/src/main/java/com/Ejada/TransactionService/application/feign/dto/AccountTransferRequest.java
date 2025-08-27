@@ -14,11 +14,11 @@ public class AccountTransferRequest {
 
     @NotBlank(message = "From Account ID is required")
     @NotNull(message = "From Account ID is required")
-    private String from_account_id;
+    private String fromAccountId;
 
     @NotBlank(message = "To Account ID is required")
     @NotNull(message = "To Account ID is required")
-    private String to_account_id;
+    private String toAccountId;
 
     @PositiveOrZero(message = "Amount cannot be negative")
     @NotBlank(message = "Amount is required")
