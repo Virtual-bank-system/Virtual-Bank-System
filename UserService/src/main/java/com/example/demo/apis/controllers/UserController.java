@@ -14,24 +14,21 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    // ✅ Registration with validation
     @PostMapping("/register")
     public ResponseEntity<UserResponse> register(@Valid @RequestBody UserRegistration dto) {
         UserResponse response = userService.register(dto);
         return ResponseEntity.ok(response);
     }
 
-    // ✅ Login
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody UserLogin dto) {
         LoginResponse response = userService.login(dto);
         return ResponseEntity.ok(response);
     }
 
-    // ✅ Get Profile
-    @GetMapping("/{userId}")
-    public ResponseEntity<UserProfile> getProfile(@PathVariable String userId) {
-        UserProfile profile = userService.getProfile(userId);
+    @GetMapping("/{userID}")
+    public ResponseEntity<UserProfile> getProfile(@PathVariable String userID) {
+        UserProfile profile = userService.getProfile(userID);
         return ResponseEntity.ok(profile);
     }
 }

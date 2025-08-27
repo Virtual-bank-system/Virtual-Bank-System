@@ -8,6 +8,7 @@ import com.example.demo.application.models.User;
 import com.example.demo.application.repos.UserRepo;
 import com.example.demo.application.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -15,6 +16,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepo userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public UserResponse register(UserRegistration dto) {
@@ -25,7 +29,7 @@ public class UserServiceImpl implements UserService {
 
         User user = new User();
         user.setUsername(dto.getUsername());
-        user.setPassword(dto.getPassword()); // ⚠ no encoding
+        user.setPassword(passwordEncoder.encode(dto.getPassword()));
         user.setEmail(dto.getEmail());
         user.setFirstName(dto.getFirstName());
         user.setLastName(dto.getLastName());
@@ -33,7 +37,7 @@ public class UserServiceImpl implements UserService {
         User saved = userRepository.save(user);
 
         return new UserResponse(
-                saved.getId(),
+                saved.getUserID(),
                 saved.getUsername(),
                 "User registered successfully"
         );
@@ -44,24 +48,23 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByUsername(dto.getUsername())
                 .orElseThrow(() -> new InvalidUserException());
 
-        // ⚠ plain text comparison
-        if (!dto.getPassword().equals(user.getPassword())) {
+        if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
             throw new InvalidUserException();
         }
 
         return new LoginResponse(
-                user.getId(),
+                user.getUserID(),
                 user.getUsername()
         );
     }
 
     @Override
-    public UserProfile getProfile(String userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User with ID " + userId + " not found.", "NOT_FOUND", 404));
+    public UserProfile getProfile(String userID) {
+        User user = userRepository.findById(userID)
+                .orElseThrow(() -> new UserNotFoundException("User with ID " + userID + " not found.", "NOT_FOUND", 404));
 
         return new UserProfile(
-                user.getId(),
+                user.getUserID(),
                 user.getUsername(),
                 user.getEmail(),
                 user.getFirstName(),
