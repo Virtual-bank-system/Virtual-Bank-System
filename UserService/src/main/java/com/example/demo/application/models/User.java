@@ -27,7 +27,7 @@ public class User {
 
     @Column (nullable = false)
     private String lastName;
-
+  
     @Column(updatable = false)
     private LocalDateTime created_at = LocalDateTime.now();
 }

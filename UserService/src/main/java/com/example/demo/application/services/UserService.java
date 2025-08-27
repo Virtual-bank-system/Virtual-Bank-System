@@ -7,3 +7,4 @@ public interface UserService {
     LoginResponse login(UserLogin dto);
     UserProfile getProfile(String userID);
 }
+
