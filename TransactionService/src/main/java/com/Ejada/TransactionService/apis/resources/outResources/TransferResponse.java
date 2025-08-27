@@ -10,9 +10,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TransferResponse {
-    private String id;
-
+    private String transactionId;
     private Status status;
-
     private LocalDateTime timestamp;
 }

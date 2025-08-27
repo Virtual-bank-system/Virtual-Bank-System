@@ -7,8 +7,8 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-// will change it
-@FeignClient(name = "TransactionService", url = "http://localhost:8081")
+
+@FeignClient(name = "TransactionService", url = "http://localhost:8080")
 @Async
 public interface TransactionClient {
 
