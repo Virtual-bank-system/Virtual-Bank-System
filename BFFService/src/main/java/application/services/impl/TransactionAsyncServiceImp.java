@@ -15,7 +15,7 @@ public class TransactionAsyncServiceImp implements TransactionAsyncService {
 
     private final TransactionClient transactionClient;
 
-    @Async
+    @Async("taskExecutor")
     public CompletableFuture<TransactionDetailList> getTransactionsAsync(String accountId) {
         TransactionDetailList transactionList = transactionClient.getTransactionsList(accountId);
         return CompletableFuture.completedFuture(transactionList);
