@@ -15,10 +15,10 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String transactionId;
 
-    @Column(name = "from_account_id", nullable = false)
+    @Column(nullable = false)
     private String fromAccountId;
 
-    @Column(name = "to_account_id", nullable = false)
+    @Column(nullable = false)
     private String toAccountId;
 
 
