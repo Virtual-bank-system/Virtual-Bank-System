@@ -10,7 +10,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DashboardResponse {
-    private  UserProfile userProfile;
-    private List<AccountDetail> accountDetailList;
-    private TransactionDetailList transactionDetailList;
+    private UserProfile userProfile;
+    private List<AccountWithTransactions> accounts;
 }

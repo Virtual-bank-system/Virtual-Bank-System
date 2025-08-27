@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/bff")
 public class DashboardController {
 
+
     private final DashboardService dashboardService;
 
     public DashboardController(DashboardService dashboardService) {
