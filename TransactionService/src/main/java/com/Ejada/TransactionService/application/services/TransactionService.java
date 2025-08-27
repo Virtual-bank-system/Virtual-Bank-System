@@ -11,4 +11,5 @@ public interface TransactionService {
     TransactionExecutionResponse executeTransaction(String transactionId);
 
     TransactionHistoryListResponse getTransactionsList(String accountId);
+
 }

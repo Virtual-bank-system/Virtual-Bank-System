@@ -38,5 +38,4 @@ public class TransactionController {
     public ResponseEntity<TransactionHistoryListResponse> getTransactionsList(@PathVariable String account_id) {
         return ResponseEntity.ok(transactionService.getTransactionsList(account_id));
     }
-
 }

@@ -1,46 +1,40 @@
 package com.example.demo.apis.controllers;
 
+import com.example.demo.apis.resources.*;
 import com.example.demo.application.services.UserService;
-import com.example.demo.apis.resources.UserCreateRequest;
-import com.example.demo.apis.resources.UserCreateResponse;
-import com.example.demo.apis.resources.UserUpdateRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+
 import java.util.List;
+
 
 @RestController
 @RequestMapping("/users")
 public class UserController {
 
     @Autowired
-    UserService userService;
 
-    @PostMapping
-    public ResponseEntity<UserCreateResponse> createUser(@RequestBody @Valid UserCreateRequest user) {
-        return ResponseEntity.ok(userService.createUser(user));
+    private UserService userService;
+
+    @PostMapping("/register")
+    public ResponseEntity<UserResponse> register(@Valid @RequestBody UserRegistration dto) {
+        UserResponse response = userService.register(dto);
+        return ResponseEntity.ok(response);
     }
 
-    @GetMapping
-    public ResponseEntity<List<UserCreateResponse>> getAllUsers() {
-        return ResponseEntity.ok(userService.getAllUsers());
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> login(@Valid @RequestBody UserLogin dto) {
+        LoginResponse response = userService.login(dto);
+        return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<UserCreateResponse> getUserById(@PathVariable String id) {
-        return ResponseEntity.ok(userService.getUserById(id));
-    }
+    @GetMapping("/{userID}")
+    public ResponseEntity<UserProfile> getProfile(@PathVariable String userID) {
+        UserProfile profile = userService.getProfile(userID);
+        return ResponseEntity.ok(profile);
 
-    @PutMapping("/{id}")
-    public ResponseEntity<UserCreateResponse> updateUser(@PathVariable String id, @RequestBody @Valid UserUpdateRequest updatedUser) {
-        return ResponseEntity.ok(userService.updateUser(id, updatedUser));
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable String id) {
-        userService.deleteUser(id);
-        return ResponseEntity.noContent().build();
     }
 }

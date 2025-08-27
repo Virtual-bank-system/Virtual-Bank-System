@@ -2,7 +2,7 @@ package com.example.demo.application.exceptions;
 
 public class UserAlreadyExistsException extends ApplicationException {
     public UserAlreadyExistsException() {
-        super("User already exists", "USER_ALREADY_EXISTS", 400);
+        super("Username or email already exists.", "CONFLICT", 409);
     }
 
     public UserAlreadyExistsException(String message, String errorCode, int httpStatus) {

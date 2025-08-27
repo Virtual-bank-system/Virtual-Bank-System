@@ -11,7 +11,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    private String userID;
 
     @Column (unique = true, nullable = false)
     private String username;
@@ -27,8 +27,8 @@ public class User {
 
     @Column (nullable = false)
     private String lastName;
-
-    @Column(updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-    private LocalDateTime created_at;
+  
+    @Column(updatable = false)
+    private LocalDateTime created_at = LocalDateTime.now();
 }
 
