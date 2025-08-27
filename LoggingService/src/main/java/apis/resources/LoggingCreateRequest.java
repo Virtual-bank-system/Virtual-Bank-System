@@ -18,9 +18,9 @@ public class LoggingCreateRequest {
 
     @NotBlank(message = "Message Type is required")
     @NotNull(message = "Message Type is required")
-    private MessageType message_type;
+    private MessageType messageType;
 
     @NotBlank(message = "Date Time is required")
     @NotNull(message = "Date Time is required")
-    private LocalDateTime date_time;
+    private LocalDateTime localDateTime;
 }

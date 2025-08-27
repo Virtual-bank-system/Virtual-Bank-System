@@ -19,8 +19,8 @@ public class Logging {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private MessageType message_type;
+    private MessageType messageType;
 
     @Column(nullable = false)
-    private LocalDateTime date_time;
+    private LocalDateTime localDateTime;
 }
