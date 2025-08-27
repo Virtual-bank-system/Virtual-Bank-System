@@ -28,7 +28,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleOtherExceptions(Exception ex) {
         ex.printStackTrace();
         ErrorResponse error = new ErrorResponse(
-                ex.getMessage(),
+                "Internal Server Error",
                 "INTERNAL_ERROR",
                 500
         );
