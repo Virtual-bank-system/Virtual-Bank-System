@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 @Data
 public class TransactionDetail {
 
-    private String id;
+    private String transactionId;
     private String from_account_id;
     private String to_account_id;
     private double amount;

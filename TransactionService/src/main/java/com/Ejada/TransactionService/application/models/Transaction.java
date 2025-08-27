@@ -13,7 +13,7 @@ import com.Ejada.TransactionService.application.enums.Status;
 public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    private String transactionId;
 
     @Column(name = "from_account_id", nullable = false)
     private String fromAccountId;

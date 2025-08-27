@@ -16,7 +16,6 @@ import com.Ejada.TransactionService.application.models.Transaction;
 import com.Ejada.TransactionService.application.repos.TransactionRepo;
 import com.Ejada.TransactionService.application.services.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -70,7 +69,6 @@ public class TransactionServiceImpl implements TransactionService {
     public TransferResponse executeTransaction(String transactionId) {
         // Check ID
         Transaction transaction = transactionRepo.findById(transactionId)
-                ///  ????
                 .orElseThrow(() -> new FailedTransaction());
 
         try {
@@ -97,7 +95,7 @@ public class TransactionServiceImpl implements TransactionService {
             transactionRepo.save(transaction);
 
             return new TransferResponse(
-                    transaction.getId(),
+                    transaction.getTransactionId(),
                     Status.SUCCESS,
                     transaction.getTimestamp()
             );

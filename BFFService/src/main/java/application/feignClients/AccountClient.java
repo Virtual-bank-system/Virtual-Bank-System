@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
-// will change it
-@FeignClient(name = "AccountService", url = "http://localhost:8081")
+
+@FeignClient(name = "AccountService", url = "http://localhost:8084")
 public interface AccountClient {
 
     @GetMapping("accounts/users/{userId}")

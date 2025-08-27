@@ -9,8 +9,8 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-// Will change it
-@FeignClient(value = "AccountService", url = "http://localhost:8081")
+
+@FeignClient(value = "AccountService", url = "http://localhost:8084")
 public interface AccountClient {
 
     @GetMapping("/accounts/{accountId}")
