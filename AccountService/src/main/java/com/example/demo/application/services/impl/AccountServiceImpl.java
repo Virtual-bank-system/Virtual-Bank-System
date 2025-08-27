@@ -5,6 +5,7 @@ import com.example.demo.application.enums.Status;
 import com.example.demo.application.exceptions.AccountNotFoundException;
 import com.example.demo.application.exceptions.InsufficientFundsException;
 import com.example.demo.application.exceptions.InvalidAccountException;
+import com.example.demo.application.feign.UserClient;
 import com.example.demo.application.models.Account;
 import com.example.demo.application.repos.AccountRepo;
 import com.example.demo.application.services.AccountService;
@@ -22,7 +23,16 @@ public class AccountServiceImpl implements AccountService {
     @Autowired
     private AccountRepo accountRepository;
 
+    @Autowired
+    private UserClient userClient;
+
     public AccountResponse createAccount(AccountCreation request) {
+        try {
+            userClient.getProfile(request.getUserId());
+        } catch (Exception e) {
+            throw new InvalidAccountException("User with ID " + request.getUserId() + " does not exist" , "NOT_FOUND", 404);
+        }
+
         if(request.getInitialBalance()<0 || Double.isNaN(request.getInitialBalance()))
             throw new InvalidAccountException();
 
