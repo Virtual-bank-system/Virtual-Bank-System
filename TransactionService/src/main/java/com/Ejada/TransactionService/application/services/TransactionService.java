@@ -1,15 +1,15 @@
 package com.Ejada.TransactionService.application.services;
 
-import com.Ejada.TransactionService.apis.resources.outResources.TransactionExecutionResponse;
-import com.Ejada.TransactionService.apis.resources.outResources.TransactionHistoryListResponse;
-import com.Ejada.TransactionService.apis.resources.outResources.TransactionInitiationResponse;
+import com.Ejada.TransactionService.apis.resources.outResources.TransactionDetailList;
+import com.Ejada.TransactionService.apis.resources.outResources.TransferResponse;
+import com.Ejada.TransactionService.application.exceptions.FailedTransaction;
+import com.Ejada.TransactionService.application.exceptions.InsufficientFunds;
 
 
 public interface TransactionService {
-    TransactionInitiationResponse initiateTransaction(String fromAccountId, String toAccountId, double amount, String description);
+    TransferResponse initiateTransaction(String fromAccountId, String toAccountId, double amount, String description) throws InsufficientFunds;
 
-    TransactionExecutionResponse executeTransaction(String transactionId);
+    TransferResponse executeTransaction(String transactionId) throws FailedTransaction;
 
-    TransactionHistoryListResponse getTransactionsList(String accountId);
-
+    TransactionDetailList getTransactionsList(String accountId);
 }

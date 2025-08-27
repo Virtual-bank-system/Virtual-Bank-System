@@ -1,12 +1,16 @@
-package com.Ejada.TransactionService.apis.resources;
+package com.Ejada.TransactionService.application.feign.dto;
 
-import com.Ejada.TransactionService.application.enums.Status;
-import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import jakarta.validation.constraints.*;
-import java.time.LocalDateTime;
-
-public class TransactionCreateRequest {
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class AccountTransferRequest {
 
     @NotBlank(message = "From Account ID is required")
     @NotNull(message = "From Account ID is required")
@@ -20,7 +24,4 @@ public class TransactionCreateRequest {
     @NotBlank(message = "Amount is required")
     @NotNull(message = "Amount is required")
     private double amount;
-
-    private String description;
-
 }

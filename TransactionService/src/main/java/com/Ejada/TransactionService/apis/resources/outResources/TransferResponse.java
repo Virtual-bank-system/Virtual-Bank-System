@@ -1,17 +1,18 @@
 package com.Ejada.TransactionService.apis.resources.outResources;
 
 import com.Ejada.TransactionService.application.enums.Status;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-
-public class TransactionHistoryResponse {
-
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class TransferResponse {
     private String id;
-    private String from_account_id;
-    private String to_account_id;
-    private double amount;
-    private Status status;
-    private String description;
-    private LocalDateTime timestamp;
 
+    private Status status;
+
+    private LocalDateTime timestamp;
 }

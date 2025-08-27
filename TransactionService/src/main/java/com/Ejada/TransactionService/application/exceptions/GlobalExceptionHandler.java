@@ -13,6 +13,17 @@ import java.util.Map;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler(ApplicationException.class)
+    public ResponseEntity<ErrorResponse> handleApplicationException(ApplicationException ex) {
+        ErrorResponse error = new ErrorResponse(
+                ex.getHttpStatus(),
+                ex.getErrorCode(),
+                ex.getMessage()
+        );
+        return new ResponseEntity<>(error, HttpStatus.valueOf(ex.getHttpStatus()));
+    }
+
     // fallback for uncaught exceptions
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleOtherExceptions(Exception ex) {
@@ -20,9 +31,9 @@ public class GlobalExceptionHandler {
         HttpStatus internalServerError = HttpStatus.INTERNAL_SERVER_ERROR;
 
         ErrorResponse error = new ErrorResponse(
-                "Internal Server Error",
-                internalServerError,
-                ZonedDateTime.now()
+                500,
+                "INTERNAL_SERVER_ERROR",
+                "Internal Server Error"
         );
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }

@@ -1,13 +1,16 @@
 package com.Ejada.TransactionService.application.mappers;
 
-import com.Ejada.TransactionService.apis.resources.outResources.TransactionHistoryResponse;
+import com.Ejada.TransactionService.apis.resources.outResources.TransactionDetail;
+import com.Ejada.TransactionService.apis.resources.outResources.TransferResponse;
+import com.Ejada.TransactionService.application.feign.dto.AccountTransferRequest;
 import com.Ejada.TransactionService.application.models.Transaction;
 
 import java.util.List;
 
 @org.mapstruct.Mapper(componentModel = "spring")
 public interface Mapper {
-    TransactionHistoryResponse toTransactionResponse(Transaction transaction);
+    TransactionDetail toTransactionResponse(Transaction transaction);
 
-    List<TransactionHistoryResponse> toTransactionResponseList(List<Transaction> transactions);
+    TransferResponse toTransferResponse(Transaction transaction);
+
 }
