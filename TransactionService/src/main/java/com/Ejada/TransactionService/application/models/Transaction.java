@@ -21,7 +21,6 @@ public class Transaction {
     @Column(nullable = false)
     private String toAccountId;
 
-
     @Column(columnDefinition = "DECIMAL(15,2)", nullable = false)
     private double amount;
 

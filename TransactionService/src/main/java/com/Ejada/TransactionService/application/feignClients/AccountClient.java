@@ -1,12 +1,11 @@
-package com.Ejada.TransactionService.application.feign;
+package com.Ejada.TransactionService.application.feignClients;
 
 
-import com.Ejada.TransactionService.application.feign.dto.AccountDetail;
-import com.Ejada.TransactionService.application.feign.dto.AccountTransferRequest;
-import com.Ejada.TransactionService.application.feign.dto.AccountTransferResponse;
+import com.Ejada.TransactionService.apis.dto.AccountDetail;
+import com.Ejada.TransactionService.apis.dto.AccountTransferRequest;
+import com.Ejada.TransactionService.apis.dto.AccountTransferResponse;
 import jakarta.validation.Valid;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 

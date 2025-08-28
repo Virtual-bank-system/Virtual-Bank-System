@@ -1,4 +1,4 @@
-package com.Ejada.TransactionService.application.feign.dto;
+package com.Ejada.TransactionService.apis.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

@@ -9,8 +9,8 @@ import java.time.LocalDateTime;
 public class TransactionDetail {
 
     private String transactionId;
-    private String from_account_id;
-    private String to_account_id;
+    private String fromAccountId;
+    private String toAccountId;
     private double amount;
     private String description;
     private LocalDateTime timestamp;
