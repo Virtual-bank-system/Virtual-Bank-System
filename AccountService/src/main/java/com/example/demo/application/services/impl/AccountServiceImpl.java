@@ -78,6 +78,7 @@ public class AccountServiceImpl implements AccountService {
         Account to = accountRepository.findById(request.getToAccountId())
                 .orElseThrow(AccountNotFoundException::new);
 
+        System.out.println(request.getAmount());
         if (from.getBalance() < request.getAmount()) {
             throw new InsufficientFundsException();
         }
