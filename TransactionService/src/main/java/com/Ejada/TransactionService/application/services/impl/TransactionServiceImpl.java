@@ -15,7 +15,7 @@ import com.Ejada.TransactionService.application.mappers.Mapper;
 import com.Ejada.TransactionService.application.models.Transaction;
 import com.Ejada.TransactionService.application.repos.TransactionRepo;
 import com.Ejada.TransactionService.application.services.TransactionService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -25,16 +25,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class TransactionServiceImpl implements TransactionService {
 
-    @Autowired
-    private TransactionRepo transactionRepo;
+    private final TransactionRepo transactionRepo;
 
-    @Autowired
-    private Mapper mapper;
+    private final Mapper mapper;
 
-    @Autowired
-    private AccountClient accountClient;
+    private final AccountClient accountClient;
 
     public TransferResponse initiateTransaction(String fromAccountId, String toAccountId, double amount, String description){
         // 1- check if from account id exists
@@ -59,9 +57,9 @@ public class TransactionServiceImpl implements TransactionService {
         transaction.setStatus(Status.INITIATED);
         transaction.setTimestamp(LocalDateTime.now());
 
-        transactionRepo.save(transaction);
-
-        TransferResponse response = mapper.toTransferResponse(transaction);
+        Transaction saved = transactionRepo.save(transaction);
+//        System.out.println("Generated ID: " + saved.getTransactionId());
+        TransferResponse response = mapper.toTransferResponse(saved);
 
         return response;
     }
@@ -71,23 +69,19 @@ public class TransactionServiceImpl implements TransactionService {
         Transaction transaction = transactionRepo.findById(transactionId)
                 .orElseThrow(() -> new FailedTransaction());
 
+
         try {
-            //  Debit from account
-            AccountTransferRequest debitRequest = new AccountTransferRequest(
+            if (transaction.getStatus() != Status.INITIATED) {
+                throw new FailedTransaction();
+            }
+            // Debit
+            AccountTransferRequest request = new AccountTransferRequest(
                     transaction.getFromAccountId(),
                     transaction.getToAccountId(),
-                    -transaction.getAmount() // negative as debit
+                    transaction.getAmount()
             );
-            accountClient.transfer(debitRequest);
+            accountClient.transfer(request);
 
-            //  Credit to account
-            AccountTransferRequest creditRequest = new AccountTransferRequest(
-                    transaction.getToAccountId(),
-                    transaction.getFromAccountId(),
-                    transaction.getAmount() // positive for credit
-            );
-
-            accountClient.transfer(creditRequest);
 
             // Update transaction to SUCCESS
             transaction.setStatus(Status.SUCCESS);
@@ -99,12 +93,15 @@ public class TransactionServiceImpl implements TransactionService {
                     Status.SUCCESS,
                     transaction.getTimestamp()
             );
-        }
-        catch (Exception e) {
+
+        } catch (Exception ex) {
+            // Mark transaction as FAILED
             transaction.setStatus(Status.FAILED);
             transaction.setTimestamp(LocalDateTime.now());
             transactionRepo.save(transaction);
-            throw new FailedTransaction(e.getMessage(),"Bad Request",400);
+
+            // Rethrow the exception
+            throw ex;
         }
     }
 
@@ -122,7 +119,8 @@ public class TransactionServiceImpl implements TransactionService {
         // 3 - Convert "from" transactions to response → mark as negative + SENT
         List<TransactionDetail> fromResponses = fromTransactions.stream()
                 .map(transaction -> {
-                    TransactionDetail res = mapper.toTransactionResponse(transaction);
+                    TransactionDetail res = mapper.toTransactionDetail(transaction);
+                    System.out.println(transaction);
                     res.setAmount(-transaction.getAmount());
                     res.setDeliveryStatus(DeliveryStatus.SENT);
                     return res;
@@ -132,7 +130,7 @@ public class TransactionServiceImpl implements TransactionService {
         // 4 - Convert "to" transactions to response → keep positive + DELIVERED
         List<TransactionDetail> toResponses = toTransactions.stream()
                 .map(tx -> {
-                    TransactionDetail res = mapper.toTransactionResponse(tx);
+                    TransactionDetail res = mapper.toTransactionDetail(tx);
                     res.setDeliveryStatus(DeliveryStatus.DELIVERED);
                     return res;
                 })

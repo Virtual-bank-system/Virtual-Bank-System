@@ -1,11 +1,14 @@
 package com.Ejada.TransactionService.application.exceptions;
 
 import com.Ejada.TransactionService.apis.resources.outResources.ErrorResponse;
+import feign.FeignException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.ZonedDateTime;
 import java.util.HashMap;
@@ -22,6 +25,17 @@ public class GlobalExceptionHandler {
                 ex.getMessage()
         );
         return new ResponseEntity<>(error, HttpStatus.valueOf(ex.getHttpStatus()));
+    }
+
+    @ExceptionHandler(FeignException.class)
+    public ResponseEntity<String> handleFeignException(FeignException ex) {
+
+        String errorJson = ex.contentUTF8();
+
+        return ResponseEntity
+                .status(ex.status())
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(errorJson);
     }
 
     // fallback for uncaught exceptions
