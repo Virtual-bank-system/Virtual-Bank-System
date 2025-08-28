@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 
 @FeignClient(name = "TransactionService", url = "http://localhost:8080")
-@Async
 public interface TransactionClient {
 
     @GetMapping("/accounts/{accountId}/transactions")

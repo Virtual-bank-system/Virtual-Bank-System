@@ -2,7 +2,9 @@ package application.exceptions;
 
 
 import apis.dto.ErrorResponse;
+import feign.FeignException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -36,6 +38,17 @@ public class GlobalExceptionHandler {
                 "Internal Server Error"
         );
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(FeignException.class)
+    public ResponseEntity<String> handleFeignException(FeignException ex) {
+
+        String errorJson = ex.contentUTF8();
+
+        return ResponseEntity
+                .status(ex.status())
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(errorJson);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

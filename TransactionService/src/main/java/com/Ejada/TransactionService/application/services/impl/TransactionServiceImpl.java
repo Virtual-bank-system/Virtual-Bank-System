@@ -5,9 +5,10 @@ import com.Ejada.TransactionService.apis.resources.outResources.TransactionDetai
 import com.Ejada.TransactionService.apis.resources.outResources.TransferResponse;
 import com.Ejada.TransactionService.application.enums.DeliveryStatus;
 import com.Ejada.TransactionService.application.enums.Status;
-import com.Ejada.TransactionService.application.exceptions.InsufficientFunds;
-import com.Ejada.TransactionService.application.exceptions.FailedTransaction;
-import com.Ejada.TransactionService.application.exceptions.NoTransactionList;
+import com.Ejada.TransactionService.application.exceptions.InsufficientFundsException;
+import com.Ejada.TransactionService.application.exceptions.FailedTransactionException;
+import com.Ejada.TransactionService.application.exceptions.NoTransactionListException;
+import com.Ejada.TransactionService.application.exceptions.SameAccountTransferException;
 import com.Ejada.TransactionService.application.feign.AccountClient;
 import com.Ejada.TransactionService.application.feign.dto.AccountDetail;
 import com.Ejada.TransactionService.application.feign.dto.AccountTransferRequest;
@@ -42,10 +43,13 @@ public class TransactionServiceImpl implements TransactionService {
         AccountDetail from = accountClient.getAccountById(fromAccountId);
         AccountDetail to = accountClient.getAccountById(toAccountId);
 
+        if (fromAccountId.equals(toAccountId)){
+            throw new SameAccountTransferException();
+        }
         double currentBalance = from.getBalance();
 
         if(amount > currentBalance){
-             throw new InsufficientFunds();
+             throw new InsufficientFundsException();
         }
 
         Transaction transaction = new Transaction();
@@ -67,12 +71,12 @@ public class TransactionServiceImpl implements TransactionService {
     public TransferResponse executeTransaction(String transactionId) {
         // Check ID
         Transaction transaction = transactionRepo.findById(transactionId)
-                .orElseThrow(() -> new FailedTransaction());
+                .orElseThrow(() -> new FailedTransactionException());
 
 
         try {
             if (transaction.getStatus() != Status.INITIATED) {
-                throw new FailedTransaction();
+                throw new FailedTransactionException();
             }
             // Debit
             AccountTransferRequest request = new AccountTransferRequest(
@@ -113,29 +117,29 @@ public class TransactionServiceImpl implements TransactionService {
         List<Transaction> toTransactions = transactionRepo.findByToAccountId(accountId);
 
         if (fromTransactions.isEmpty() && toTransactions.isEmpty()) {
-            throw new NoTransactionList(accountId);
+            throw new NoTransactionListException(accountId);
         }
 
-        // 3 - Convert "from" transactions to response → mark as negative + SENT
+        // 3 - Convert "from" transactions → only SUCCESS
         List<TransactionDetail> fromResponses = fromTransactions.stream()
+                .filter(tx -> tx.getStatus() == Status.SUCCESS)
                 .map(transaction -> {
                     TransactionDetail res = mapper.toTransactionDetail(transaction);
-                    System.out.println(transaction);
                     res.setAmount(-transaction.getAmount());
                     res.setDeliveryStatus(DeliveryStatus.SENT);
                     return res;
                 })
                 .collect(Collectors.toList());
 
-        // 4 - Convert "to" transactions to response → keep positive + DELIVERED
+        // 4 - Convert "to" transactions → only SUCCESS
         List<TransactionDetail> toResponses = toTransactions.stream()
+                .filter(tx -> tx.getStatus() == Status.SUCCESS)
                 .map(tx -> {
                     TransactionDetail res = mapper.toTransactionDetail(tx);
                     res.setDeliveryStatus(DeliveryStatus.DELIVERED);
                     return res;
                 })
                 .collect(Collectors.toList());
-
         // Combine both lists
         List<TransactionDetail> allResponses = new ArrayList<>();
         allResponses.addAll(fromResponses);
@@ -147,7 +151,7 @@ public class TransactionServiceImpl implements TransactionService {
 
         // Build response
         TransactionDetailList response = new TransactionDetailList();
-        response.setTransaction_response_list(allResponses);
+        response.setTransactionDetailList(allResponses);
 
         return response;
     }

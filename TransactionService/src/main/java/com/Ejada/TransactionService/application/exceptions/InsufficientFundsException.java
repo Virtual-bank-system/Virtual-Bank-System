@@ -1,12 +1,12 @@
 package com.Ejada.TransactionService.application.exceptions;
 
-public class InsufficientFunds extends ApplicationException{
+public class InsufficientFundsException extends ApplicationException{
 
-    public InsufficientFunds() {
+    public InsufficientFundsException() {
         super("Insufficient funds for this transaction", "Bad Request", 400);
     }
 
-    public InsufficientFunds(String message, String errorCode, int httpStatus) {
+    public InsufficientFundsException(String message, String errorCode, int httpStatus) {
         super(message, errorCode, httpStatus);
     }
 }

@@ -9,7 +9,7 @@ import lombok.Data;
 
 public class UserProfile {
 
-    private String userId;
+    private String userID;
     private String username;
     private String email;
     private String firstName;
