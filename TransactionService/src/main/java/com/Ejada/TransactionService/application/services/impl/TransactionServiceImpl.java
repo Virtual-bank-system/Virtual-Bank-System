@@ -9,9 +9,9 @@ import com.Ejada.TransactionService.application.exceptions.InsufficientFundsExce
 import com.Ejada.TransactionService.application.exceptions.FailedTransactionException;
 import com.Ejada.TransactionService.application.exceptions.NoTransactionListException;
 import com.Ejada.TransactionService.application.exceptions.SameAccountTransferException;
-import com.Ejada.TransactionService.application.feign.AccountClient;
-import com.Ejada.TransactionService.application.feign.dto.AccountDetail;
-import com.Ejada.TransactionService.application.feign.dto.AccountTransferRequest;
+import com.Ejada.TransactionService.application.feignClients.AccountClient;
+import com.Ejada.TransactionService.apis.dto.AccountDetail;
+import com.Ejada.TransactionService.apis.dto.AccountTransferRequest;
 import com.Ejada.TransactionService.application.mappers.Mapper;
 import com.Ejada.TransactionService.application.models.Transaction;
 import com.Ejada.TransactionService.application.repos.TransactionRepo;
@@ -36,17 +36,16 @@ public class TransactionServiceImpl implements TransactionService {
     private final AccountClient accountClient;
 
     public TransferResponse initiateTransaction(String fromAccountId, String toAccountId, double amount, String description){
-        // 1- check if from account id exists
-        // 2- check if to account id exists
-        // 3- check amount is valid : non-negative , greater than balance in from account id
-        // 4- if valid, save it
-        AccountDetail from = accountClient.getAccountById(fromAccountId);
-        AccountDetail to = accountClient.getAccountById(toAccountId);
+        // Check if fromAccount account id exists
+        AccountDetail fromAccount = accountClient.getAccountById(fromAccountId);
+
+        // Check if toAccount account id exists
+        AccountDetail toAccount = accountClient.getAccountById(toAccountId);
 
         if (fromAccountId.equals(toAccountId)){
             throw new SameAccountTransferException();
         }
-        double currentBalance = from.getBalance();
+        double currentBalance = fromAccount.getBalance();
 
         if(amount > currentBalance){
              throw new InsufficientFundsException();
