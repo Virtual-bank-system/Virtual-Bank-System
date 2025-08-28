@@ -73,11 +73,11 @@ public class TransactionServiceImpl implements TransactionService {
         Transaction transaction = transactionRepo.findById(transactionId)
                 .orElseThrow(() -> new FailedTransactionException());
 
+        if (transaction.getStatus() != Status.INITIATED) {
+            throw new FailedTransactionException();
+        }
 
         try {
-            if (transaction.getStatus() != Status.INITIATED) {
-                throw new FailedTransactionException();
-            }
             // Debit
             AccountTransferRequest request = new AccountTransferRequest(
                     transaction.getFromAccountId(),
@@ -109,7 +109,7 @@ public class TransactionServiceImpl implements TransactionService {
         }
     }
 
-    public TransactionDetailList getTransactionsList(String accountId){
+    public TransactionDetailList getTransactionsList(String accountId) {
         // check on account id
         AccountDetail accountDetail = accountClient.getAccountById(accountId);
 
@@ -120,34 +120,45 @@ public class TransactionServiceImpl implements TransactionService {
             throw new NoTransactionListException(accountId);
         }
 
-        // 3 - Convert "from" transactions → only SUCCESS
+        // Convert "from" transactions → SUCCESS or FAILED
         List<TransactionDetail> fromResponses = fromTransactions.stream()
-                .filter(tx -> tx.getStatus() == Status.SUCCESS)
                 .map(transaction -> {
                     TransactionDetail res = mapper.toTransactionDetail(transaction);
                     res.setAmount(-transaction.getAmount());
-                    res.setDeliveryStatus(DeliveryStatus.SENT);
+
+                    if (transaction.getStatus() == Status.SUCCESS) {
+                        res.setDeliveryStatus(DeliveryStatus.SENT);
+                    }
+                    else {
+                        res.setDeliveryStatus(DeliveryStatus.FAILED);
+                    }
+                    res.setDescription(transaction.getDescription() == null ? "" : transaction.getDescription());
                     return res;
                 })
                 .collect(Collectors.toList());
 
-        // 4 - Convert "to" transactions → only SUCCESS
+        // Convert "to" transactions → SUCCESS or FAILED
         List<TransactionDetail> toResponses = toTransactions.stream()
-                .filter(tx -> tx.getStatus() == Status.SUCCESS)
                 .map(tx -> {
                     TransactionDetail res = mapper.toTransactionDetail(tx);
-                    res.setDeliveryStatus(DeliveryStatus.DELIVERED);
+
+                    if (tx.getStatus() == Status.SUCCESS) {
+                        res.setDeliveryStatus(DeliveryStatus.DELIVERED);
+                    }
+                    else {
+                        res.setDeliveryStatus(DeliveryStatus.FAILED);
+                    }
                     return res;
                 })
                 .collect(Collectors.toList());
+
         // Combine both lists
         List<TransactionDetail> allResponses = new ArrayList<>();
         allResponses.addAll(fromResponses);
         allResponses.addAll(toResponses);
 
-        // sort by timestamp descending
+        // Sort by timestamp descending
         allResponses.sort(Comparator.comparing(TransactionDetail::getTimestamp).reversed());
-
 
         // Build response
         TransactionDetailList response = new TransactionDetailList();
@@ -155,4 +166,5 @@ public class TransactionServiceImpl implements TransactionService {
 
         return response;
     }
+
 }

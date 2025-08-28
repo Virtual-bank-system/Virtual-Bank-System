@@ -1,6 +1,7 @@
 package application.services.impl;
 
 import apis.dto.*;
+import application.exceptions.FailedRetrieveException;
 import application.feignClients.AccountClient;
 import application.feignClients.UserClient;
 import application.mapper.AccountMapper;
@@ -54,7 +55,7 @@ public class DashboardServiceImp implements DashboardService {
 
         }
         catch (Exception e) {
-            throw e;
+            throw new FailedRetrieveException();
         }
     }
 }
