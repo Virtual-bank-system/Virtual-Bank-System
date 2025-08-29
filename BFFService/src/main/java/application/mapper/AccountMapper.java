@@ -1,9 +1,9 @@
 package application.mapper;
 
-import apis.dto.AccountDetail;
-import apis.dto.AccountWithTransactions;
-import apis.dto.TransactionDetail;
-import apis.dto.TransactionDetailList;
+import apis.resources.AccountDetail;
+import apis.resources.AccountWithTransactions;
+import apis.resources.TransactionDetail;
+import apis.resources.TransactionDetailList;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

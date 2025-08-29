@@ -1,6 +1,6 @@
 package application.feignClients;
 
-import apis.dto.AccountDetail;
+import apis.resources.AccountDetail;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

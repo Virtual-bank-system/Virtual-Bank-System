@@ -1,6 +1,6 @@
 package apis.controllers;
 
-import apis.dto.DashboardResponse;
+import apis.resources.DashboardResponse;
 import application.services.DashboardService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
