@@ -9,20 +9,30 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
+
 @Service
 public class KafkaConsumer {
 
     private final LoggingRepo loggingRepo;
-    private final Mapper mapper;
 
-    public KafkaConsumer(LoggingRepo loggingRepo, Mapper mapper) {
+    public KafkaConsumer(LoggingRepo loggingRepo) {
         this.loggingRepo = loggingRepo;
-        this.mapper = mapper;
     }
 
-    @KafkaListener(topics = "logging-topic", groupId = "logging-group")
+    @KafkaListener(topics = "logging-topic", groupId = "logging-group", containerFactory = "kafkaListenerContainerFactory")
     public void consumeLog(LogMessage logMessage) {
-        Logging logging = mapper.toLogging(logMessage);
+        System.out.println("Consumed message: " + logMessage);
+
+        Logging logging = new Logging();
+        logging.setMessage(logMessage.getMessage());
+        logging.setMessageType(logMessage.getMessageType());
+        logging.setDateTime(logMessage.getDateTime());
         loggingRepo.save(logging);
     }
+
+//    @KafkaListener(topics = "logging-topic", groupId = "logging-group")
+//    public void debugListener(String message) {
+//        System.out.println("RAW message: " + message);
+//    }
 }
+

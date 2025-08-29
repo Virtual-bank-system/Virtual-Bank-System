@@ -9,6 +9,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class LogMessage {
     private String message;
-    private MessageType message_type;
-    private LocalDateTime date_time;
+    private MessageType messageType;
+    private String dateTime;
 }

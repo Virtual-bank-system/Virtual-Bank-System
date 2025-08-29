@@ -1,18 +1,21 @@
 package application.models;
 
 import application.enums.MessageType;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 @Data
 @Entity
+@NoArgsConstructor
 public class Logging {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private BigInteger id;
+    private Long id;
 
     @Column(columnDefinition = "TEXT", nullable = false)
     private String message;
@@ -22,5 +25,6 @@ public class Logging {
     private MessageType messageType;
 
     @Column(nullable = false)
-    private LocalDateTime localDateTime;
+    private String dateTime;
 }
+

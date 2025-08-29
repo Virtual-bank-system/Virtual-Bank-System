@@ -40,14 +40,14 @@ public class RequestResponseLoggingFilter extends OncePerRequestFilter {
         // Capture request body
         String requestBody = new String(wrappedRequest.getContentAsByteArray(), StandardCharsets.UTF_8);
         if (!requestBody.isEmpty()) {
-            LogMessage requestLog = new LogMessage(requestBody, MessageType.Request, LocalDateTime.now());
+            LogMessage requestLog = new LogMessage(requestBody, MessageType.Request, LocalDateTime.now().toString());
             kafkaProducer.sendLog(requestLog);
         }
 
         // Capture response body
         String responseBody = new String(wrappedResponse.getContentAsByteArray(), StandardCharsets.UTF_8);
         if (!responseBody.isEmpty()) {
-            LogMessage responseLog = new LogMessage(responseBody, MessageType.Response, LocalDateTime.now());
+            LogMessage responseLog = new LogMessage(responseBody, MessageType.Response, LocalDateTime.now().toString());
             kafkaProducer.sendLog(responseLog);
         }
 
