@@ -11,7 +11,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @ComponentScan(basePackages = {"application","apis","com"})
 @EnableJpaRepositories(basePackages = "application.repos")
 @EntityScan(basePackages = "application.models")
-@EnableFeignClients
+@EnableFeignClients(basePackages = "application.feignClients")
 public class TransactionServiceApplication {
 
 	public static void main(String[] args) {
