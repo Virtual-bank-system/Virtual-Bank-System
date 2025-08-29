@@ -13,7 +13,7 @@ import application.feignClients.AccountClient;
 import apis.dto.AccountDetail;
 import apis.dto.AccountTransferRequest;
 import application.mappers.Mapper;
-import application.models.Transaction;
+import application.models.Transactions;
 import application.repos.TransactionRepo;
 import application.services.TransactionService;
 import lombok.RequiredArgsConstructor;
@@ -51,16 +51,16 @@ public class TransactionServiceImpl implements TransactionService {
              throw new InsufficientFundsException();
         }
 
-        Transaction transaction = new Transaction();
+        Transactions transactions = new Transactions();
 
-        transaction.setFromAccountId(fromAccountId);
-        transaction.setToAccountId(toAccountId);
-        transaction.setAmount(amount);
-        transaction.setDescription(description);
-        transaction.setStatus(Status.INITIATED);
-        transaction.setTimestamp(LocalDateTime.now());
+        transactions.setFromAccountId(fromAccountId);
+        transactions.setToAccountId(toAccountId);
+        transactions.setAmount(amount);
+        transactions.setDescription(description);
+        transactions.setStatus(Status.INITIATED);
+        transactions.setTimestamp(LocalDateTime.now());
 
-        Transaction saved = transactionRepo.save(transaction);
+        Transactions saved = transactionRepo.save(transactions);
 //        System.out.println("Generated ID: " + saved.getTransactionId());
         TransferResponse response = mapper.toTransferResponse(saved);
 
@@ -69,39 +69,39 @@ public class TransactionServiceImpl implements TransactionService {
 
     public TransferResponse executeTransaction(String transactionId) {
         // Check ID
-        Transaction transaction = transactionRepo.findById(transactionId)
+        Transactions transactions = transactionRepo.findById(transactionId)
                 .orElseThrow(() -> new FailedTransactionException());
 
-        if (transaction.getStatus() != Status.INITIATED) {
+        if (transactions.getStatus() != Status.INITIATED) {
             throw new FailedTransactionException();
         }
 
         try {
             // Debit
             AccountTransferRequest request = new AccountTransferRequest(
-                    transaction.getFromAccountId(),
-                    transaction.getToAccountId(),
-                    transaction.getAmount()
+                    transactions.getFromAccountId(),
+                    transactions.getToAccountId(),
+                    transactions.getAmount()
             );
             accountClient.transfer(request);
 
 
             // Update transaction to SUCCESS
-            transaction.setStatus(Status.SUCCESS);
-            transaction.setTimestamp(LocalDateTime.now());
-            transactionRepo.save(transaction);
+            transactions.setStatus(Status.SUCCESS);
+            transactions.setTimestamp(LocalDateTime.now());
+            transactionRepo.save(transactions);
 
             return new TransferResponse(
-                    transaction.getTransactionId(),
+                    transactions.getTransactionId(),
                     Status.SUCCESS,
-                    transaction.getTimestamp()
+                    transactions.getTimestamp()
             );
 
         } catch (Exception ex) {
             // Mark transaction as FAILED
-            transaction.setStatus(Status.FAILED);
-            transaction.setTimestamp(LocalDateTime.now());
-            transactionRepo.save(transaction);
+            transactions.setStatus(Status.FAILED);
+            transactions.setTimestamp(LocalDateTime.now());
+            transactionRepo.save(transactions);
 
             // Rethrow the exception
             throw ex;
@@ -112,44 +112,43 @@ public class TransactionServiceImpl implements TransactionService {
         // check on account id
         AccountDetail accountDetail = accountClient.getAccountById(accountId);
 
-        List<Transaction> fromTransactions = transactionRepo.findByFromAccountId(accountId);
-        List<Transaction> toTransactions = transactionRepo.findByToAccountId(accountId);
+        List<Transactions> fromTransactions = transactionRepo.findByFromAccountId(accountId);
+        List<Transactions> toTransactions = transactionRepo.findByToAccountId(accountId);
 
         if (fromTransactions.isEmpty() && toTransactions.isEmpty()) {
             throw new NoTransactionListException(accountId);
         }
 
-        // Convert "from" transactions → SUCCESS or FAILED
+        System.out.println(fromTransactions);
+        System.out.println(toTransactions);
+
         List<TransactionDetail> fromResponses = fromTransactions.stream()
-                .map(transaction -> {
-                    TransactionDetail res = mapper.toTransactionDetail(transaction);
-                    res.setAmount(-transaction.getAmount());
-
-                    if (transaction.getStatus() == Status.SUCCESS) {
-                        res.setDeliveryStatus(DeliveryStatus.SENT);
-                    }
-                    else {
-                        res.setDeliveryStatus(DeliveryStatus.FAILED);
-                    }
-                    res.setDescription(transaction.getDescription() == null ? "" : transaction.getDescription());
+                .map(tx -> {
+                    TransactionDetail res = new TransactionDetail();
+                    res.setTransactionId(tx.getTransactionId());
+                    res.setFromAccountId(tx.getFromAccountId());
+                    res.setToAccountId(tx.getToAccountId());
+                    res.setAmount(-tx.getAmount());
+                    res.setDescription(tx.getDescription() == null ? "" : tx.getDescription());
+                    res.setTimestamp(tx.getTimestamp() != null ? tx.getTimestamp() : LocalDateTime.now());
+                    res.setDeliveryStatus(tx.getStatus() == Status.SUCCESS ? DeliveryStatus.SENT : DeliveryStatus.FAILED);
                     return res;
-                })
-                .collect(Collectors.toList());
+                }).collect(Collectors.toList());
 
-        // Convert "to" transactions → SUCCESS or FAILED
+
         List<TransactionDetail> toResponses = toTransactions.stream()
                 .map(tx -> {
-                    TransactionDetail res = mapper.toTransactionDetail(tx);
-
-                    if (tx.getStatus() == Status.SUCCESS) {
-                        res.setDeliveryStatus(DeliveryStatus.DELIVERED);
-                    }
-                    else {
-                        res.setDeliveryStatus(DeliveryStatus.FAILED);
-                    }
+                    TransactionDetail res = new TransactionDetail();
+                    res.setTransactionId(tx.getTransactionId());
+                    res.setFromAccountId(tx.getFromAccountId());
+                    res.setToAccountId(tx.getToAccountId());
+                    res.setAmount(tx.getAmount());
+                    res.setDescription(tx.getDescription() == null ? "" : tx.getDescription());
+                    res.setTimestamp(tx.getTimestamp() != null ? tx.getTimestamp() : LocalDateTime.now());
+                    res.setDeliveryStatus(tx.getStatus() == Status.SUCCESS ? DeliveryStatus.DELIVERED : DeliveryStatus.FAILED);
                     return res;
-                })
-                .collect(Collectors.toList());
+                }).collect(Collectors.toList());
+
 
         // Combine both lists
         List<TransactionDetail> allResponses = new ArrayList<>();

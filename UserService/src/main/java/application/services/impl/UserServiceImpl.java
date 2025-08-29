@@ -4,7 +4,7 @@ import apis.resources.*;
 import application.exceptions.InvalidUserException;
 import application.exceptions.UserAlreadyExistsException;
 import application.exceptions.UserNotFoundException;
-import application.models.User;
+import application.models.Users;
 import application.repos.UserRepo;
 import application.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,14 +27,14 @@ public class UserServiceImpl implements UserService {
             throw new UserAlreadyExistsException();
         }
 
-        User user = new User();
-        user.setUsername(dto.getUsername());
-        user.setPassword(passwordEncoder.encode(dto.getPassword()));
-        user.setEmail(dto.getEmail());
-        user.setFirstName(dto.getFirstName());
-        user.setLastName(dto.getLastName());
+        Users users = new Users();
+        users.setUsername(dto.getUsername());
+        users.setPassword(passwordEncoder.encode(dto.getPassword()));
+        users.setEmail(dto.getEmail());
+        users.setFirstName(dto.getFirstName());
+        users.setLastName(dto.getLastName());
 
-        User saved = userRepository.save(user);
+        Users saved = userRepository.save(users);
 
         return new UserResponse(
                 saved.getUserID(),
@@ -45,30 +45,30 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public LoginResponse login(UserLogin dto) {
-        User user = userRepository.findByUsername(dto.getUsername())
+        Users users = userRepository.findByUsername(dto.getUsername())
                 .orElseThrow(() -> new InvalidUserException());
 
-        if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
+        if (!passwordEncoder.matches(dto.getPassword(), users.getPassword())) {
             throw new InvalidUserException();
         }
 
         return new LoginResponse(
-                user.getUserID(),
-                user.getUsername()
+                users.getUserID(),
+                users.getUsername()
         );
     }
 
     @Override
     public UserProfile getProfile(String userID) {
-        User user = userRepository.findById(userID)
+        Users users = userRepository.findById(userID)
                 .orElseThrow(() -> new UserNotFoundException("User with ID " + userID + " not found.", "NOT_FOUND", 404));
 
         return new UserProfile(
-                user.getUserID(),
-                user.getUsername(),
-                user.getEmail(),
-                user.getFirstName(),
-                user.getLastName()
+                users.getUserID(),
+                users.getUsername(),
+                users.getEmail(),
+                users.getFirstName(),
+                users.getLastName()
         );
     }
 }

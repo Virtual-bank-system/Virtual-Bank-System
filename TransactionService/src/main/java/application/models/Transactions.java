@@ -10,7 +10,7 @@ import application.enums.Status;
 @Data
 @Entity
 @Table(name = "transaction")
-public class Transaction {
+public class Transactions {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String transactionId;

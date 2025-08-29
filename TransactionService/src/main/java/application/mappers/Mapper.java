@@ -2,12 +2,12 @@ package application.mappers;
 
 import apis.resources.outResources.TransactionDetail;
 import apis.resources.outResources.TransferResponse;
-import application.models.Transaction;
+import application.models.Transactions;
 
 @org.mapstruct.Mapper(componentModel = "spring")
 public interface Mapper {
 
-    TransactionDetail toTransactionDetail(Transaction transaction);
+    TransactionDetail toTransactionDetail(Transactions transactions);
 
-    TransferResponse toTransferResponse(Transaction transaction);
+    TransferResponse toTransferResponse(Transactions transactions);
 }

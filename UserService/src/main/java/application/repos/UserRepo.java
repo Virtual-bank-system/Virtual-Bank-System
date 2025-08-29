@@ -1,14 +1,13 @@
 package application.repos;
 
-import application.models.User;
-import org.springframework.beans.factory.annotation.Autowired;
+import application.models.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface UserRepo extends JpaRepository<User,String> {
-    Optional<User> findByUsername(String username);
-    Optional<User> findByEmail(String email);
+public interface UserRepo extends JpaRepository<Users,String> {
+    Optional<Users> findByUsername(String username);
+    Optional<Users> findByEmail(String email);
 }
