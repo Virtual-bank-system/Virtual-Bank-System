@@ -1,0 +1,37 @@
+package com.example.demo.application.jobs;
+
+import com.example.demo.application.enums.Status;
+import com.example.demo.application.models.Account;
+import com.example.demo.application.repos.AccountRepo;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Component
+public class AccountScheduler {
+
+    @Autowired
+    private AccountRepo accountRepo;
+
+    @Scheduled(fixedRate = 60 * 60 * 1000)
+    public void markInactiveAccounts() {
+        LocalDateTime cutoff = LocalDateTime.now().minusHours(24);
+
+        List<Account> accounts = accountRepo.findAll().stream()
+                .filter(acc -> acc.getStatus() == Status.ACTIVE)
+                .filter(acc -> acc.getUpdated_at().isBefore(cutoff)) 
+                .toList();
+
+        accounts.forEach(acc -> {
+            acc.setStatus(Status.INACTIVE);
+            acc.setUpdated_at(LocalDateTime.now());
+            accountRepo.save(acc);
+        });
+    }
+}
+
+
