@@ -1,6 +1,6 @@
 package application.services;
 
-import apis.dto.TransactionDetailList;
+import apis.resources.TransactionDetailList;
 
 import java.util.concurrent.CompletableFuture;
 

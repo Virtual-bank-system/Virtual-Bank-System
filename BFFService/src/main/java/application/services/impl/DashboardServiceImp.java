@@ -1,6 +1,6 @@
 package application.services.impl;
 
-import apis.dto.*;
+import apis.resources.*;
 import application.exceptions.FailedRetrieveException;
 import application.feignClients.AccountClient;
 import application.feignClients.UserClient;

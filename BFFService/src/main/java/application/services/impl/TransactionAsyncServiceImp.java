@@ -1,6 +1,6 @@
 package application.services.impl;
 
-import apis.dto.TransactionDetailList;
+import apis.resources.TransactionDetailList;
 import application.feignClients.TransactionClient;
 import application.services.TransactionAsyncService;
 import lombok.RequiredArgsConstructor;

@@ -1,11 +1,8 @@
 package application.services;
 
 import apis.resources.LogMessage;
-import application.mappers.Mapper;
-import application.models.Logging;
+import application.models.Logs;
 import application.repos.LoggingRepo;
-import org.mapstruct.factory.Mappers;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
@@ -13,16 +10,24 @@ import org.springframework.stereotype.Service;
 public class KafkaConsumer {
 
     private final LoggingRepo loggingRepo;
-    private final Mapper mapper;
 
-    public KafkaConsumer(LoggingRepo loggingRepo, Mapper mapper) {
+    public KafkaConsumer(LoggingRepo loggingRepo) {
         this.loggingRepo = loggingRepo;
-        this.mapper = mapper;
     }
 
-    @KafkaListener(topics = "logging-topic", groupId = "logging-group")
+    @KafkaListener(topics = "logging-topic", groupId = "logging-group", containerFactory = "kafkaListenerContainerFactory")
+
     public void consumeLog(LogMessage logMessage) {
-        Logging logging = mapper.toLogging(logMessage);
-        loggingRepo.save(logging);
+        System.out.println("Consumed message: " + logMessage);
+
+        Logs logs = new Logs();
+        logs.setMessage(logMessage.getMessage());
+        logs.setMessageType(logMessage.getMessageType());
+        logs.setDateTime(logMessage.getDateTime());
+
+        loggingRepo.save(logs);
+        System.out.println("Logging: " + logs);
     }
+
 }
+

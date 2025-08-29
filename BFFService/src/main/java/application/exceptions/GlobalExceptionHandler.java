@@ -1,7 +1,7 @@
 package application.exceptions;
 
 
-import apis.dto.ErrorResponse;
+import apis.resources.ErrorResponse;
 import feign.FeignException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

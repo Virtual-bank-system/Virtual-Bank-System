@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
-import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 
 import java.util.HashMap;
@@ -31,7 +30,7 @@ public class KafkaConsumerConfig {
         configProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         configProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
         configProps.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
-//        configProps.put(JsonDeserializer.TRUSTED_PACKAGES, "apis.resources"); // allow deserialization
+        configProps.put(JsonDeserializer.TRUSTED_PACKAGES, "*"); // allow all
         return configProps;
     }
 
@@ -40,13 +39,13 @@ public class KafkaConsumerConfig {
         return new DefaultKafkaConsumerFactory<>(
                 consumerConfig(),
                 new StringDeserializer(),
-                new JsonDeserializer<>(LogMessage.class)
+                new JsonDeserializer<>(LogMessage.class) // no "false"
         );
     }
 
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, LogMessage> factory() {
+    public ConcurrentKafkaListenerContainerFactory<String, LogMessage> kafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, LogMessage> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
