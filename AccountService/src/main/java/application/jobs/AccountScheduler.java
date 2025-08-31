@@ -1,9 +1,8 @@
-package com.example.demo.application.jobs;
+package application.jobs;
 
-import com.example.demo.application.enums.Status;
-import com.example.demo.application.models.Account;
-import com.example.demo.application.repos.AccountRepo;
-import lombok.RequiredArgsConstructor;
+import application.enums.Status;
+import application.models.Account;
+import application.repos.AccountRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -23,7 +22,7 @@ public class AccountScheduler {
 
         List<Account> accounts = accountRepo.findAll().stream()
                 .filter(acc -> acc.getStatus() == Status.ACTIVE)
-                .filter(acc -> acc.getUpdated_at().isBefore(cutoff)) 
+                .filter(acc -> acc.getUpdated_at().isBefore(cutoff))
                 .toList();
 
         accounts.forEach(acc -> {
@@ -33,5 +32,6 @@ public class AccountScheduler {
         });
     }
 }
+
 
 
