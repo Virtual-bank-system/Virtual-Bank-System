@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
 
 @Service
@@ -17,7 +18,16 @@ public class TransactionAsyncServiceImp implements TransactionAsyncService {
 
     @Async("taskExecutor")
     public CompletableFuture<TransactionDetailList> getTransactionsAsync(String accountId) {
-        TransactionDetailList transactionList = transactionClient.getTransactionsList(accountId);
-        return CompletableFuture.completedFuture(transactionList);
+
+        TransactionDetailList transactionList = new TransactionDetailList();
+        try {
+            transactionList = transactionClient.getTransactionsList(accountId);
+            return CompletableFuture.completedFuture(transactionList);
+        }
+        catch (Exception e) {
+            transactionList.setTransactionDetailList(new ArrayList<>());
+            return CompletableFuture.completedFuture(transactionList);
+        }
+
     }
 }

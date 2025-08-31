@@ -24,14 +24,14 @@ public class DashboardServiceImp implements DashboardService {
 
 
     public DashboardResponse getDashboard(String userId) {
+
+        // Fetch user profile
+        UserProfile userProfile = userClient.getProfile(userId);
+
+        // Fetch accounts for user
+        List<AccountDetail> accountDetailList = accountClient.getAccountsByUser(userId);
+
         try {
-            // Fetch user profile
-            UserProfile userProfile = userClient.getProfile(userId);
-
-
-            // Fetch accounts for user
-            List<AccountDetail> accountDetailList = accountClient.getAccountsByUser(userId);
-
             // Async calls for transactions
             List<CompletableFuture<AccountWithTransactions>> futures = accountDetailList.stream()
                     .map(account -> transactionAsyncService.getTransactionsAsync(account.getAccountId())
