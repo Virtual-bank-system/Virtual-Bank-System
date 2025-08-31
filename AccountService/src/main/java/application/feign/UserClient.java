@@ -10,4 +10,5 @@ public interface UserClient {
 
     @GetMapping("/users/{userID}/profile")
     ResponseEntity<UserProfile> getProfile(@PathVariable String userID);
+    
 }
