@@ -11,6 +11,6 @@ import java.util.List;
 @FeignClient(name = "AccountService", url = "http://localhost:8084")
 public interface AccountClient {
 
-    @GetMapping("accounts/users/{userId}")
+    @GetMapping("users/{userId}/accounts")
     List<AccountDetail> getAccountsByUser(@PathVariable String userId);
 }
