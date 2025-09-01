@@ -5,11 +5,7 @@ import apis.resources.outResources.TransactionDetailList;
 import apis.resources.outResources.TransferResponse;
 import application.enums.DeliveryStatus;
 import application.enums.Status;
-import application.exceptions.InsufficientFundsException;
-import application.exceptions.FailedTransactionException;
-import application.exceptions.NoTransactionListException;
-import application.exceptions.AccountNotFoundException;
-import application.exceptions.SameAccountTransferException;
+import application.exceptions.*;
 import application.feignClients.AccountClient;
 import apis.dto.AccountDetail;
 import apis.dto.AccountTransferRequest;
@@ -42,12 +38,19 @@ public class TransactionServiceImpl implements TransactionService {
         AccountDetail fromAccount = new AccountDetail();
         AccountDetail toAccount = new AccountDetail();
 
+
         try{
             // Check if fromAccount account id exists
             fromAccount = accountClient.getAccountById(fromAccountId);
 
             // Check if toAccount account id exists
             toAccount = accountClient.getAccountById(toAccountId);
+
+            if (fromAccount.getStatus().toLowerCase() == "inactive" || toAccount.getStatus().toLowerCase() == "inactive")
+            {
+                throw new InactiveAccountException();
+            }
+
         }
         catch(Exception e){
             throw new AccountNotFoundException();

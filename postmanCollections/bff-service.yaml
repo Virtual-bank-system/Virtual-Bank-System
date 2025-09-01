@@ -1,0 +1,32 @@
+{
+	"info": {
+		"_postman_id": "afa672bc-58b7-4e1e-8b60-9ab773ef7755",
+		"name": "BFF Service",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "47472683",
+		"_collection_link": "https://malakelhady76-4382813.postman.co/workspace/My-Workspace~d0e4a19c-1793-45db-a65d-23cb9073c813/collection/47572022-98b274e0-1977-4fa7-a588-2e66f9214447?action=share&source=copy-link&creator=47572022"
+	},
+	"item": [
+		{
+			"name": "dashboard",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8083/bff/dashboard/{{userId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8083",
+					"path": [
+						"bff",
+						"dashboard",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

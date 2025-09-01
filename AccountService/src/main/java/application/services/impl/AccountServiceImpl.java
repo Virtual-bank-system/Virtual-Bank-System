@@ -4,6 +4,7 @@ import apis.resources.*;
 import application.enums.AccountType;
 import application.enums.Status;
 import application.exceptions.AccountNotFoundException;
+import application.exceptions.InactiveAccountException;
 import application.exceptions.InsufficientFundsException;
 import application.exceptions.InvalidAccountException;
 import application.feign.UserClient;
@@ -77,6 +78,11 @@ public class AccountServiceImpl implements AccountService {
 
         Account to = accountRepository.findById(request.getToAccountId())
                 .orElseThrow(AccountNotFoundException::new);
+
+        if (from.getStatus() == Status.INACTIVE || to.getStatus() == Status.INACTIVE)
+        {
+            throw new InactiveAccountException();
+        }
 
         System.out.println(request.getAmount());
         if (from.getBalance() < request.getAmount()) {
