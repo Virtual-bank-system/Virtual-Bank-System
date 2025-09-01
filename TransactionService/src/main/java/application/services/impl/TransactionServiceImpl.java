@@ -52,6 +52,10 @@ public class TransactionServiceImpl implements TransactionService {
             }
 
         }
+        catch (InactiveAccountException e)
+        {
+            throw new AccountNotFoundException();
+        }
         catch(Exception e){
             throw new AccountNotFoundException();
         }
