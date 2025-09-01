@@ -1,4 +1,4 @@
-package application.feign;
+package apis.resources;
 
 import lombok.Data;
 

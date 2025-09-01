@@ -1,8 +1,8 @@
 package application.jobs;
 
 import application.enums.Status;
-import application.feign.TransactionDetail;
-import application.feign.TransactionDetailList;
+import apis.resources.TransactionDetail;
+import apis.resources.TransactionDetailList;
 import application.models.Account;
 import application.repos.AccountRepo;
 import application.feign.TransactionClient;
@@ -23,7 +23,7 @@ public class AccountScheduler {
     @Autowired
     private TransactionClient transactionClient;
 
-    @Scheduled(cron = "0 */1 * ? * *") 
+    @Scheduled(cron = "0 0 * * * *")
     public void markInactiveAccounts() {
         LocalDateTime cutoff = LocalDateTime.now().minusHours(24);
 
