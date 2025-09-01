@@ -59,10 +59,10 @@ To simplify API testing, ready-made Postman collections are provided in the
 
 ### Available Collections  
 
-- [**User Service.postman_collection.json**](https://github.com/Virtual-bank-system/Virtual-Bank-System/blob/master/postmanCollections/User%20Service.postman_collection.json) → User Service endpoints  
-- [**Account Service.postman_collection.json**](https://github.com/Virtual-bank-system/Virtual-Bank-System/blob/master/postmanCollections/Account%20Service.postman_collection.json) → Account Service endpoints  
-- [**Transaction Service.postman_collection.json**](https://github.com/Virtual-bank-system/Virtual-Bank-System/blob/master/postmanCollections/Transaction%20Service.postman_collection.json) → Transaction Service endpoints  
-- [**BFF Service.postman_collection.json**](https://github.com/Virtual-bank-system/Virtual-Bank-System/blob/master/postmanCollections/BFF%20Service.postman_collection.json) → BFF Service endpoints  
+- [**User Service.postman_collection.json**](https://github.com/Virtual-bank-system/Virtual-Bank-System/blob/master/postmanCollections/user-service.yaml) → User Service endpoints  
+- [**Account Service.postman_collection.json**](https://github.com/Virtual-bank-system/Virtual-Bank-System/blob/master/postmanCollections/account-service.yaml) → Account Service endpoints  
+- [**Transaction Service.postman_collection.json**](https://github.com/Virtual-bank-system/Virtual-Bank-System/blob/master/postmanCollections/transaction-service.yaml) → Transaction Service endpoints  
+- [**BFF Service.postman_collection.json**](https://github.com/Virtual-bank-system/Virtual-Bank-System/blob/master/postmanCollections/bff-service.yaml) → BFF Service endpoints  
 
 ---
 
