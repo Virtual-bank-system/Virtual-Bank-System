@@ -54,21 +54,21 @@ Consumes Kafka messages and stores request/response logs for monitoring.
 ## Postman Collections  
 
 To simplify API testing, ready-made Postman collections are provided in the  
-`postman-collections/` folder.  
+[`postman-collections`](https://github.com/Virtual-bank-system/Virtual-Bank-System/tree/master/postmanCollections) folder.  folder.  
 
 
 ### Available Collections  
 
-- **User Service.postman_collection.json** → User Service endpoints  
-- **Account Service.postman_collection.json** → Account Service endpoints  
-- **Transaction Service.postman_collection.json** → Transaction Service endpoints  
-- **BFF Service.postman_collection.json** → BFF Service endpoints  
+- [**User Service.postman_collection.json**](https://github.com/Virtual-bank-system/Virtual-Bank-System/blob/master/postmanCollections/User%20Service.postman_collection.json) → User Service endpoints  
+- [**Account Service.postman_collection.json**](https://github.com/Virtual-bank-system/Virtual-Bank-System/blob/master/postmanCollections/Account%20Service.postman_collection.json) → Account Service endpoints  
+- [**Transaction Service.postman_collection.json**](https://github.com/Virtual-bank-system/Virtual-Bank-System/blob/master/postmanCollections/Transaction%20Service.postman_collection.json) → Transaction Service endpoints  
+- [**BFF Service.postman_collection.json**](https://github.com/Virtual-bank-system/Virtual-Bank-System/blob/master/postmanCollections/BFF%20Service.postman_collection.json) → BFF Service endpoints  
 
 ---
 
 ## Import Instructions  
 
-1. Open **Postman**.  
+1. Open **[Postman](https://www.postman.com/web)**.  
 2. Click **Import** → select the `.json` file(s) from the `postman-collections/` folder.  
 3. The collections will appear **grouped by service**.  
 4. Each collection includes example requests with placeholder IDs.  
