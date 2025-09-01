@@ -46,16 +46,16 @@ public class TransactionServiceImpl implements TransactionService {
             // Check if toAccount account id exists
             toAccount = accountClient.getAccountById(toAccountId);
 
-            if (fromAccount.getStatus().toLowerCase() == "inactive" || toAccount.getStatus().toLowerCase() == "inactive")
+            if (fromAccount.getStatus().toLowerCase().equals("inactive") || toAccount.getStatus().toLowerCase().equals("inactive"))
             {
                 throw new InactiveAccountException();
             }
-
         }
         catch (InactiveAccountException e)
         {
-            throw new AccountNotFoundException();
+            throw new InactiveAccountException();
         }
+
         catch(Exception e){
             throw new AccountNotFoundException();
         }
