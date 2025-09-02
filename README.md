@@ -85,7 +85,7 @@ server.port=PORT_NUMBER
 # Database
 spring.datasource.url=jdbc:mysql://localhost:3306/DATABASE_NAME
 spring.datasource.username=root
-spring.datasource.password=root
+spring.datasource.password=your_password
 spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
 
 # JPA / Hibernate
@@ -142,3 +142,5 @@ To simplify API testing, ready-made Postman collections are provided in the
 3. The collections will appear **grouped by service**.  
 4. Each collection includes example requests with placeholder IDs.  
    - Replace these with actual IDs once your services are running.  
+
+
